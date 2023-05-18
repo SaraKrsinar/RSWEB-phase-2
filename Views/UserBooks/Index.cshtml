@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Bookstore.Models.UserBooks>
+@using Microsoft.AspNetCore.Identity
+@using Bookstore.Areas.Identity.Data
+
+@inject SignInManager<BookstoreUser> SignInManager
+@inject UserManager<BookstoreUser> UserManager
+
+@{
+    ViewData["Title"] = "UserBooks";
+}
+
+
+<h1>UserBooks</h1>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add New User Book</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AppUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+
+                @if (item.AppUser == @UserManager.GetUserName(User))
+                {
+                <tr>
+                    <td>
+
+                            @UserManager.GetUserName(User)
+                    </td>
+
+                    <td>
+                        <a asp-action="Details" asp-controller="Books" asp-route-id="@item.BookId"> @Html.DisplayFor(modelItem => item.Book.Title) </a>
+                    </td>
+
+                    <td>
+
+                        <form a asp-action="GetPdf" asp-controller="Books">
+                            <input name="url" type="hidden" value="@item.Book.DownloadUrl">
+                            <input type="submit" value="Download pdf">
+                        </form>
+                    </td>
+                <td>
+                    <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Edit", "UserBooks", new { id = item.Id })'">Edit</button>
+                    <button type="button" class="btn btn-info" onclick="location.href='@Url.Action("Details", "UserBooks", new { id = item.Id })'">Details</button>
+                    <button type="button" class="btn btn-danger" onclick="location.href='@Url.Action("Delete", "UserBooks", new { id = item.Id })' ">Delete</button>
+                </td>
+
+
+        </tr>
+        }
+}
+    </tbody>
+</table>
